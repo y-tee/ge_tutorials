@@ -23,6 +23,23 @@ datasources:
       class_name: SqlAlchemyDataset
     class_name: SqlAlchemyDatasource
     module_name: great_expectations.datasource
+
+  my_redshift_db:
+      credentials: ${my_redshift_db}
+      data_asset_type:
+        class_name: SqlAlchemyDataset
+        module_name: great_expectations.dataset
+      class_name: SqlAlchemyDatasource
+      batch_kwargs_generators:
+        tables:
+          class_name: TableBatchKwargsGenerator
+        queries:
+          class_name: QueryBatchKwargsGenerator
+          query_store_backend:
+            class_name: TupleFilesystemStoreBackend
+            filepath_suffix: .sql
+            base_directory: queries
+
 config_variables_file_path: config_variables.yml
 
 # The plugins_directory will be added to your python path for custom modules

@@ -9,3 +9,12 @@ This example contains the a basic deploy of Great Expectations for the "Getting 
 
 ## ge_dbt_airflow_tutorial
 This example demonstrates the use of Great Expectations in a data pipeline with dbt and Apache Airflow. See the README in the directory for details.
+
+## edits
+Set up datasource with [redshift](https://docs.greatexpectations.io/en/latest/guides/how_to_guides/configuring_datasources/how_to_configure_a_redshift_datasource.html):
+1. In `great_expectations.yml`, already included in repo no changes needed
+2. In `config_variables.yml`, need to add to file 
+```
+my_redshift_db:
+    url: "postgresql+psycopg2://username:password@host:port/database_name"
+```
