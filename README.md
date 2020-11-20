@@ -16,5 +16,5 @@ Set up datasource with [redshift](https://docs.greatexpectations.io/en/latest/gu
 2. In `config_variables.yml`, need to add to file 
 ```
 my_redshift_db:
-    url: "postgresql+psycopg2://username:password@host:port/database_name"
+    url: "postgresql+psycopg2://username:password@host:port/database_name?sslmode=require"
 ```

@@ -1,1 +1,0 @@
-SELECT * FROM '$schema'.'$table' WHERE '$start'::date <= '$datecolumn' AND '$datecolumn' <= '$end'::date;
