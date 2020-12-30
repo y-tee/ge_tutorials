@@ -33,14 +33,20 @@ dag = DAG(
 
 def generate_expectation(ds, **kwargs):
     mr = moneylion_redshift(great_expectations_context_path)
-    mr.create_expectation_from_table_defined("ml_public", "usertransaction_v3", "transactiondate", '2019-01-01',
-                                             '2019-06-01', '_id')
+    mr.create_expectation_from_table_defined("usr_yloo", "transaction_test", "created", '2020-10-26',
+                                             '2020-11-10', 'transaction_id')
 
 
 def generate_profile(ds, **kwargs):
     mr = moneylion_redshift(great_expectations_context_path)
-    mr.create_expectation_from_table_profiled("ml_public", "usertransaction_v3", "transactiondate", '2019-01-01',
-                                              '2019-06-01')
+    mr.create_expectation_from_table_profiled("usr_yloo", "transaction_test", "created", '2020-10-26',
+                                              '2020-12-30')
+
+
+def validate(ds, **kwargs):
+    mr = moneylion_redshift(great_expectations_context_path)
+    mr.get_rs_data_to_validate("usr_yloo", "transaction_test", "created", '2020-11-11',
+                               '2020-11-30', 'profiled_expectation_suite')
 
 
 task_generate_exp = PythonOperator(
@@ -51,8 +57,14 @@ task_generate_exp = PythonOperator(
 
 task_generate_profile = PythonOperator(
     task_id='generate_profile',
-    python_callable=generate_expectation,
+    python_callable=generate_profile,
     provide_context=True,
     dag=dag)
 
-task_generate_exp >> task_generate_profile
+validate_data = PythonOperator(
+    task_id='validate_data',
+    python_callable=validate,
+    provide_context=True,
+    dag=dag)
+
+task_generate_exp >> task_generate_profile >> validate_data

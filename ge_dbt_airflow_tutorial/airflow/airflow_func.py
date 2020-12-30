@@ -62,12 +62,26 @@ class moneylion_redshift:
         self.context.save_expectation_suite(suite,suite_name)
 
 
+    def get_rs_data_to_validate(self, schema, table, datecolumn, startdate, enddate, expectation_suite_name):
+        batch_kwargs = self.context.build_batch_kwargs(
+            "my_redshift_db",
+            "queries",
+            "query_template",
+            query_parameters={
+                "schema": schema,
+                "table": table,
+                "datecolumn": datecolumn,
+                "start": startdate,
+                "end": enddate
+            }
+        )
 
-    def get_rs_data_to_validate(self, ds, ymlfilelocation, **kwargs):
-        context = ge.data_context.DataContext(ymlfilelocation)
+        batch = self.context.get_batch(batch_kwargs, expectation_suite_name)
 
-        batch_kwargs = {
-            "datasource": "my_db",
-            "schema": "my_schema",  # schema is optional; default schema will be used if it is omitted
-            "table": "my_view"  # note that the "table" key is used even to validate a view
-        }
+        results = self.context.run_validation_operator(
+        "action_list_operator",
+        assets_to_validate=[batch],
+        run_id="my_run_id")  # e.g., Airflow run id or some run identifier that your pipeline uses.
+
+        if not results["success"]:
+            raise AirflowException("The analytical output does not meet the expectations in the suite: {0:s}".format(expectation_suite_name))
