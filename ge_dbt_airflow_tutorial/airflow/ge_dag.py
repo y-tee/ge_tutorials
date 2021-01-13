@@ -32,21 +32,21 @@ dag = DAG(
 def generate_expectation(ds, **kwargs):
     mr = moneylion_redshift(great_expectations_context_path)
     mr.create_expectation_from_table_defined(
-        "column_type_check",
+        "column_row_check",
         "usr_yloo",
         "transaction_test",
         "created",
         "2020-10-26",
         "2020-11-10",
-        columnA="created",
-        columntype="TIMESTAMP",
+        columna="created",
+        columnb="adjustmentid",
     )
 
 
 def generate_profile(ds, **kwargs):
     mr = moneylion_redshift(great_expectations_context_path)
     mr.create_expectation_from_table_profiled(
-        "usr_yloo", "transaction_test", "created", "2020-10-26", "2020-12-30"
+        "usr_yloo", "transaction_test", "created", "2020-10-26", "2020-12-30", "new_profiled"
     )
 
 
@@ -58,7 +58,7 @@ def validate(ds, **kwargs):
         "created",
         "2020-11-11",
         "2020-11-30",
-        "column_type_check",
+        "new_profiled",
     )
 
 
